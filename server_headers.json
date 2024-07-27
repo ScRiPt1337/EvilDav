@@ -1,0 +1,34 @@
+{
+    "nginx": {
+      "Server": "nginx",
+      "X-Content-Type-Options": "nosniff",
+      "X-Frame-Options": "DENY",
+      "X-XSS-Protection": "1; mode=block"
+    },
+    "netlify": {
+      "Server": "Netlify",
+      "X-Content-Type-Options": "nosniff",
+      "X-Frame-Options": "DENY",
+      "X-XSS-Protection": "1; mode=block"
+    },
+    "cloudflare": {
+      "Server": "cloudflare",
+      "CF-RAY": "<ray-id>"
+    },
+    "apache": {
+      "Server": "Apache"
+    },
+    "iis": {
+      "Server": "Microsoft-IIS/10.0"
+    },
+    "aws_cloudfront": {
+      "Server": "CloudFront",
+      "X-Cache": "Miss from cloudfront"
+    },
+    "aws_lambda": {
+      "Server": "awselb/2.0"
+    },
+    "google_cloud_function": {
+      "Server": "Google Frontend"
+    }
+  }
