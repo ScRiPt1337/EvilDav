@@ -3,7 +3,7 @@ import json
 import logging
 
 # Initialize logging
-logger = logging.getLogger('WebDAVServer')
+logger = logging.getLogger('EvilDav/1.0')
 logger.setLevel(logging.INFO)
 
 def load_headers(server_type):
@@ -16,7 +16,7 @@ def load_blocked_keywords():
         return [line.strip() for line in file]
 
 def is_browser(user_agent):
-    return any(keyword in user_agent.lower() for keyword in ['mozilla', 'chrome', 'safari'])
+    return any(keyword in user_agent.lower() for keyword in ['mozilla', 'chrome', 'safari', 'firefox', 'edge'])
 
 def is_bot(user_agent):
     bots = ['bot', 'crawler', 'spider', 'shodan', 'scanner']
@@ -44,12 +44,21 @@ def serve_filesystem(environ, start_response, app, headers):
     logger.info("Serving filesystem content.")
     return app(environ, start_response)
 
-def validate_ip(ip, allowed_countries):
+def validate_ip(ip, allowed_countries, blocked_countries):
     country = get_country(ip)
-    if country in allowed_countries:
-        logger.info(f"IP {ip} is allowed.")
+    if blocked_countries and country in blocked_countries:
+        logger.warning(f"IP {ip} from country {country} is blocked.")
+        return False
+    if allowed_countries:
+        if country in allowed_countries:
+            logger.info(f"IP {ip} from country {country} is allowed.")
+            return True
+        logger.warning(f"IP {ip} from country {country} is not allowed.")
+        return False
+    if not allowed_countries:
+        logger.info(f"No specific allowed countries set. Allowing IP {ip} from country {country}.")
         return True
-    logger.warning(f"IP {ip} is not allowed.")
+    logger.warning(f"Unable to determine country for IP: {ip}. Blocking request.")
     return False
 
 def check_blocked_keywords(environ, blocked_keywords):

@@ -1,3 +1,4 @@
 wsgidav==4.3.3
 cheroot==10.0.1
 requests==2.32.3
+colorama

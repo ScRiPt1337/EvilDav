@@ -12,6 +12,7 @@ EvilDav is a powerful and flexible WebDAV server with advanced features includin
 - **Reverse Proxy**: Option to forward blocked requests to another URL.
 - **Server Header Mimicking**: Mimics headers from popular servers like NGINX, Netlify, Cloudflare, etc.
 - **Logging**: Logs server activities to a specified file.
+- **Custom WebDAV URL**: Set a custom URL path for WebDAV access.
 
 ## Prerequisites
 
@@ -84,7 +85,7 @@ Create a file named `server_headers.json` with the following content:
 
 Run the server with the following command:
 ```sh
-python evildav.py /path/to/your/file.html --host 0.0.0.0 --port 8080 --root /path/to/serve --allowed_countries PK CN --reverse_proxy_url http://example.com --server_type nginx --read_only --log_file server.log
+python evildav.py /path/to/your/file.html --host 0.0.0.0 --port 8080 --root /path/to/serve --allowed_countries US RU --reverse_proxy_url http://example.com --server_type nginx --read_only --log_file server.log --dav_url /mydav
 ```
 
 ### Arguments
@@ -94,17 +95,19 @@ python evildav.py /path/to/your/file.html --host 0.0.0.0 --port 8080 --root /pat
 - `--port`: Port to bind the server to (default: `8080`).
 - `--root`: Root directory to serve files from (default: `.`).
 - `--allowed_countries`: List of allowed country ISO codes.
+- `--blocked_countries`: List of blocked country ISO codes.
 - `--reverse_proxy_url`: URL to reverse proxy to instead of serving HTML.
 - `--server_type`: Type of server to mimic (choices: `nginx`, `netlify`, `cloudflare`, `apache`, `iis`, `aws_cloudfront`, `aws_lambda`, `google_cloud_function`).
 - `--read_only`: Make the file serve folder read-only.
 - `--log_file`: Path to the log file (default: `server.log`).
+- `--dav_url`: URL path for WebDAV (default: `/`).
 
 ## Project Structure
 
 ```
 evildav/
 ├── worker.py
-├── wsgidav_server.py
+├── evildav.py
 ├── server_headers.json
 ├── blocked_keywords.txt
 ├── README.md
