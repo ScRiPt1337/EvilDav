@@ -26,7 +26,7 @@ EvilDav is a powerful and flexible WebDAV server with advanced features includin
 
 Clone the repository:
 ```sh
-git clone https://github.com/yourusername/evildav.git
+git clone https://github.com/ScRiPt1337/EvilDav
 cd evildav
 ```
 
