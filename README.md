@@ -18,7 +18,7 @@ EvilDav is a powerful and flexible WebDAV server with advanced features includin
 - Python 3.11
 - Required Python packages:
   ```sh
-  pip install -r requerments.txt
+  pip install -r requirements.txt
   ```
 
 ## Installation
