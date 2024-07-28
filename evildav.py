@@ -43,7 +43,7 @@ def print_banner():
     print(f"{Fore.BLUE}https://github.com/ScRiPt1337/EvilDav{Style.RESET_ALL}")
     print("\n")
 
-def create_app(html_path, root_path, allowed_countries, blocked_countries, reverse_proxy_url, server_type, read_only, dav_url, logger):
+def create_app(html_path, root_path, allowed_countries, blocked_countries, reverse_proxy_url, server_type, read_only, dav_url, allowed_user_agents, logger):
     provider = FilesystemProvider(root_path, readonly=read_only)
 
     config = {
@@ -82,6 +82,10 @@ def create_app(html_path, root_path, allowed_countries, blocked_countries, rever
                 return worker.reverse_proxy(environ, start_response, reverse_proxy_url, headers)
             return worker.serve_html(environ, start_response, html_path, headers)
 
+        if user_agent in allowed_user_agents:
+            logger.info(f"Request identified as allowed user agent: {user_agent}")
+            return worker.serve_filesystem(environ, start_response, app, headers)
+
         if worker.is_browser(user_agent):
             logger.info(f"Request identified as browser: {user_agent}")
             return worker.serve_html(environ, start_response, html_path, headers)
@@ -107,6 +111,7 @@ def main():
     parser.add_argument('--read_only', action='store_true', help="Make the file serve folder read-only")
     parser.add_argument('--log_file', type=str, default='server.log', help="Path to the log file")
     parser.add_argument('--dav_url', type=str, default='/', help="URL path for WebDAV")
+    parser.add_argument('--allowed_user_agents', type=str, nargs='+', help="List of allowed user agents")
 
     args = parser.parse_args()
 
@@ -134,9 +139,15 @@ def main():
     else:
         print(f"{Fore.YELLOW}Serving files with write permissions{Style.RESET_ALL}")
 
+    if not args.allowed_user_agents:
+        args.allowed_user_agents = []
+        print(f"{Fore.YELLOW}Warning: No allowed user agents set. All user agents will be processed normally.{Style.RESET_ALL}")
+    else:
+        print(f"{Fore.GREEN}Allowed user agents: {', '.join(args.allowed_user_agents)}{Style.RESET_ALL}")
+
     logger = configure_logging(args.log_file)
 
-    app = create_app(args.html_path, args.root, args.allowed_countries, args.blocked_countries, args.reverse_proxy_url, args.server_type, args.read_only, args.dav_url, logger)
+    app = create_app(args.html_path, args.root, args.allowed_countries, args.blocked_countries, args.reverse_proxy_url, args.server_type, args.read_only, args.dav_url, args.allowed_user_agents, logger)
 
     server = wsgi.Server(
         bind_addr=(args.host, args.port),
