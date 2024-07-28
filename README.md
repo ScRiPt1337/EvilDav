@@ -84,7 +84,7 @@ Create a file named `server_headers.json` with the following content:
 
 Run the server with the following command:
 ```sh
-python wsgidav_server.py /path/to/your/file.html --host 0.0.0.0 --port 8080 --root /path/to/serve --allowed_countries PK CN --reverse_proxy_url http://example.com --server_type nginx --read_only --log_file server.log
+python evildav.py /path/to/your/file.html --host 0.0.0.0 --port 8080 --root /path/to/serve --allowed_countries PK CN --reverse_proxy_url http://example.com --server_type nginx --read_only --log_file server.log
 ```
 
 ### Arguments
